@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MODULØR — concept 02 · signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .page {
+    --bg: #060606; --fg: #e4e4e4; --mute: #5f5f5f; --line: #1d1d1d; --hot: #ff3b1f;
+    width: 1440px; background: var(--bg); color: var(--fg); font-family: Montserrat, sans-serif;
+    overflow: hidden; border-radius: 10px; position: relative;
+    background-image: linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 120px 100%; background-position: 64px 0;
+  }
+  .mono { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+  .mute { color: var(--mute); }
+  .hot { color: var(--hot); }
+  .wrap { padding: 0 64px; position: relative; }
+
+  .bar { display: flex; justify-content: space-between; padding: 22px 64px; border-bottom: 1px solid var(--line); background: var(--bg); }
+  .bar span + span { margin-left: 28px; }
+
+  .hero { padding-top: 72px; }
+  .logo { width: 1312px; display: block; mix-blend-mode: screen; filter: contrast(1.25); margin-left: -6px; }
+  .sub { display: flex; justify-content: space-between; margin: 26px 0 40px; }
+
+  .frame { position: relative; height: 600px; border: 1px solid #2a2a2a; overflow: hidden;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 3px),
+      radial-gradient(ellipse 30% 60% at 62% 40%, rgba(255,59,31,.18), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 35% 70%, rgba(255,255,255,.06), transparent 70%),
+      #090909; }
+  .frame .c { position: absolute; width: 28px; height: 28px; border: 2px solid var(--fg); }
+  .c.tl { top: 20px; left: 20px; border-right: 0; border-bottom: 0; }
+  .c.tr { top: 20px; right: 20px; border-left: 0; border-bottom: 0; }
+  .c.bl { bottom: 20px; left: 20px; border-right: 0; border-top: 0; }
+  .c.br { bottom: 20px; right: 20px; border-left: 0; border-top: 0; }
+  .hud { position: absolute; }
+  .hud.a { top: 30px; left: 64px; } .hud.b { top: 30px; right: 64px; }
+  .hud.d { bottom: 30px; left: 64px; } .hud.e { bottom: 30px; right: 64px; }
+  .cross { position: absolute; left: 50%; top: 50%; width: 96px; height: 96px; transform: translate(-50%,-50%); }
+  .cross::before, .cross::after { content: ""; position: absolute; background: rgba(255,255,255,.35); }
+  .cross::before { left: 50%; top: 0; bottom: 0; width: 1px; } .cross::after { top: 50%; left: 0; right: 0; height: 1px; }
+  .play { position: absolute; left: 50%; top: 50%; transform: translate(-50%, 70px); border: 1px solid var(--fg); padding: 14px 26px; background: rgba(0,0,0,.4); }
+
+  section { padding: 150px 0 0; }
+  .label { display: flex; gap: 24px; align-items: baseline; margin-bottom: 56px; border-top: 1px solid #2a2a2a; padding-top: 18px; }
+  h2 { font-size: 96px; font-weight: 800; letter-spacing: -.01em; line-height: .9; text-transform: uppercase; }
+
+  .units { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .unit { border: 1px solid #222; background: var(--bg); }
+  .shot { height: 440px; position: relative; filter: contrast(1.1);
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.35) 0 1px, transparent 1px 3px),
+      radial-gradient(circle at 50% 38%, #2b2b2b 0 12%, transparent 12.4%),
+      radial-gradient(ellipse 36% 32% at 50% 100%, #222 0 99%, transparent 100%),
+      linear-gradient(160deg, rgba(255,59,31,.10), transparent 45%), #0c0c0c; }
+  .shot .mono { position: absolute; top: 16px; left: 16px; }
+  .meta { padding: 22px 20px; display: flex; justify-content: space-between; align-items: end; border-top: 1px solid #222; }
+  .meta b { font-size: 28px; font-weight: 800; text-transform: uppercase; display: block; margin-top: 6px; }
+
+  .row { display: grid; grid-template-columns: 180px 1fr 1fr 160px; align-items: center; padding: 26px 0; border-bottom: 1px solid #222; background: var(--bg); }
+  .row b { font-size: 30px; font-weight: 800; text-transform: uppercase; }
+  .chip { justify-self: end; padding: 9px 14px; border: 1px solid var(--fg); }
+  .chip.on { background: var(--hot); border-color: var(--hot); color: #000; }
+  .chip.off { color: var(--mute); border-color: #333; text-decoration: line-through; }
+
+  .book { display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; padding: 150px 0 120px; }
+  .book h2 { font-size: 132px; }
+  .lines { align-self: end; background: var(--bg); }
+  .lines p { padding: 22px 0; border-bottom: 1px solid #222; font-size: 15px; display: flex; justify-content: space-between; }
+  footer { display: flex; justify-content: space-between; padding: 22px 64px; border-top: 1px solid var(--line); background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="bar mono">
+    <div><span>Mdlr / sys</span><span class="hot">● Live</span><span class="mute">174 bpm</span></div>
+    <div><span>Band</span><span>Gigs</span><span>Booking</span><span>Instagram ↗</span></div>
+  </div>
+
+  <div class="wrap hero">
+    <img class="logo" src="/Users/timpietrusky/.t3/projects/modulor/assets/logo.jpg" alt="MODULØR">
+    <div class="sub mono"><span>Dark industrial drum &amp; bass</span><span class="mute">Experimental live unit — 3 operators</span><span>Est. 2026</span></div>
+    <div class="frame">
+      <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      <span class="hud a mono"><span class="hot">● Rec</span>&nbsp;&nbsp;00:03:41:12</span>
+      <span class="hud b mono mute">Ch-01 / 4K / 25p</span>
+      <span class="hud d mono mute">Modulør — live footage</span>
+      <span class="hud e mono">Sound off ◌</span>
+      <div class="cross"></div>
+      <span class="play mono">▶ Play signal</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section>
+      <div class="label"><span class="mono hot">01</span><h2>Operators</h2></div>
+      <div class="units">
+        <div class="unit"><div class="shot"><span class="mono mute">Unit 01</span></div><div class="meta"><div><span class="mono mute">Decks</span><b>Patrick</b></div><span class="mono hot">DJ</span></div></div>
+        <div class="unit"><div class="shot"><span class="mono mute">Unit 02</span></div><div class="meta"><div><span class="mono mute">Strings</span><b>N. N.</b></div><span class="mono hot">Live guitar</span></div></div>
+        <div class="unit"><div class="shot"><span class="mono mute">Unit 03</span></div><div class="meta"><div><span class="mono mute">Light / image</span><b>Tim</b></div><span class="mono hot">Visuals &amp; light</span></div></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="label"><span class="mono hot">02</span><h2>Dates</h2></div>
+      <div class="row"><span class="mono">14.11.2026</span><b>Berlin</b><span class="mono mute">Venue TBA</span><span class="chip on mono">Tickets →</span></div>
+      <div class="row"><span class="mono">05.12.2026</span><b>Leipzig</b><span class="mono mute">Venue TBA</span><span class="chip mono">Info</span></div>
+      <div class="row"><span class="mono">23.01.2027</span><b>Hamburg</b><span class="mono mute">Venue TBA</span><span class="chip off mono">Sold out</span></div>
+    </section>
+
+    <div class="book">
+      <div><div class="label"><span class="mono hot">03</span><span class="mono mute">Booking / contact</span></div><h2>Book<br>the<br>signal.</h2></div>
+      <div class="lines">
+        <p class="mono"><span class="mute">Mail</span><span>booking@modulør.com</span></p>
+        <p class="mono"><span class="mute">Instagram</span><span>@modulor ↗</span></p>
+        <p class="mono"><span class="mute">Tech rider</span><span>Download ↓</span></p>
+        <p class="mono"><span class="mute">Press kit</span><span>Download ↓</span></p>
+      </div>
+    </div>
+  </div>
+  <footer class="mono mute"><span>© 2026 Modulør</span><span>modulør.com</span><span class="hot">● End of transmission</span></footer>
+</div>
+<script>function z(){document.querySelector('.page').style.zoom=Math.min(1,innerWidth/1440)}z();addEventListener('resize',z)</script>
+</body>
+</html>
